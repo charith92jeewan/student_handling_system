@@ -3,22 +3,22 @@
 import { useState, useEffect, useCallback } from "react";
 import {
   checkHealth,
-  // FR01
+  // Courses
   getCourses,
   createCourse,
   updateCourse,
   deleteCourse,
-  // FR02 & FR03
+  // Students
   getStudents,
   searchStudents,
   registerStudent,
   updateStudent,
   deleteStudent,
-  // FR04
+  // Enrolment
   getEnrollments,
   enrollStudent,
   deleteEnrollment,
-  // FR05 & FR06
+  // Attendance
   markAttendance,
   getAttendanceByCourseAndDate,
   getStudentAttendanceSummary,
@@ -42,7 +42,7 @@ export default function Home() {
   const [courses, setCourses] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
 
-  // ================= FR02 & FR03: Students State =================
+  // ================= Students State =================
   const [searchQuery, setSearchQuery] = useState("");
   const [studentForm, setStudentForm] = useState({
     firstName: "",
@@ -55,7 +55,7 @@ export default function Home() {
   });
   const [editingStudentId, setEditingStudentId] = useState(null);
 
-  // ================= FR01: Courses State =================
+  // ================= Courses State =================
   const [courseForm, setCourseForm] = useState({
     code: "",
     name: "",
@@ -65,20 +65,20 @@ export default function Home() {
   });
   const [editingCourseId, setEditingCourseId] = useState(null);
 
-  // ================= FR04: Enrolment State =================
+  // ================= Enrolment State =================
   const [enrollForm, setEnrollForm] = useState({
     studentId: "",
     courseId: "",
     batch: "Batch 01",
   });
 
-  // ================= FR05: Attendance Mark State =================
+  // ================= Attendance Mark State =================
   const [attCourseId, setAttCourseId] = useState("");
   const [attDate, setAttDate] = useState("");
   const [attRecords, setAttRecords] = useState([]); // [{ enrollmentId, studentName, studentNumber, status: "PRESENT"|"ABSENT" }]
   const [attLoading, setAttLoading] = useState(false);
 
-  // ================= FR06: Attendance View State =================
+  // ================= Attendance View State =================
   const [viewStudentId, setViewStudentId] = useState("");
   const [studentSummary, setStudentSummary] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(false);
@@ -117,7 +117,7 @@ export default function Home() {
     refreshAll();
   }, [ping, refreshAll]);
 
-  // ---------------- FR02 & FR03 Handlers ----------------
+  // ---------------- Student Handlers ----------------
   const handleStudentSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
@@ -199,7 +199,7 @@ export default function Home() {
     }
   };
 
-  // ---------------- FR01 Handlers ----------------
+  // ---------------- Course Handlers ----------------
   const handleCourseSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
@@ -258,7 +258,7 @@ export default function Home() {
     }
   };
 
-  // ---------------- FR04 Handlers ----------------
+  // ---------------- Enrolment Handlers ----------------
   const handleEnrollSubmit = async (e) => {
     e.preventDefault();
     if (!enrollForm.studentId || !enrollForm.courseId) {
@@ -300,7 +300,7 @@ export default function Home() {
     }
   };
 
-  // ---------------- FR05 Handlers (Mark Attendance) ----------------
+  // ---------------- Attendance Mark Handlers ----------------
   const loadClassForAttendance = async () => {
     if (!attCourseId) {
       setErrorMsg("Please choose a course first.");
@@ -312,7 +312,7 @@ export default function Home() {
       // 1. Get all enrollments for this course
       const enrolled = await getEnrollments(Number(attCourseId));
       if (enrolled.length === 0) {
-        setErrorMsg("No students are enrolled in this course yet. Enrol students in Tab FR04 first.");
+        setErrorMsg("No students are enrolled in this course yet. Please enrol students in the Enrolment section first.");
         setAttRecords([]);
         return;
       }
@@ -366,7 +366,7 @@ export default function Home() {
     }
   };
 
-  // ---------------- FR06 Handlers (View Student Attendance) ----------------
+  // ---------------- Attendance View Handlers ----------------
   const handleLoadStudentAttendance = async (studentIdToLoad) => {
     const id = studentIdToLoad || viewStudentId;
     if (!id) {
@@ -397,7 +397,7 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-lg font-bold text-slate-900 leading-tight">Applebay Institute</h1>
-              <p className="text-xs text-slate-500">Student Handling System — Requirements FR01 to FR06</p>
+              <p className="text-xs text-slate-500">Student Handling System — Academic Management Portal</p>
             </div>
           </div>
 
@@ -446,7 +446,7 @@ export default function Home() {
                 : "border-transparent text-slate-500 hover:text-slate-700"
             }`}
           >
-            FR02 & FR03 — Students ({students.length})
+            Students ({students.length})
           </button>
           <button
             onClick={() => { setActiveTab("courses"); setErrorMsg(""); setSuccessMsg(""); }}
@@ -456,7 +456,7 @@ export default function Home() {
                 : "border-transparent text-slate-500 hover:text-slate-700"
             }`}
           >
-            FR01 — Courses ({courses.length})
+            Courses ({courses.length})
           </button>
           <button
             onClick={() => { setActiveTab("enrolment"); setErrorMsg(""); setSuccessMsg(""); }}
@@ -466,7 +466,7 @@ export default function Home() {
                 : "border-transparent text-slate-500 hover:text-slate-700"
             }`}
           >
-            FR04 — Enrolment ({enrollments.length})
+            Enrolment ({enrollments.length})
           </button>
           <button
             onClick={() => { setActiveTab("markAttendance"); setErrorMsg(""); setSuccessMsg(""); }}
@@ -476,7 +476,7 @@ export default function Home() {
                 : "border-transparent text-slate-500 hover:text-slate-700"
             }`}
           >
-            FR05 — Mark Attendance
+            Mark Attendance
           </button>
           <button
             onClick={() => { setActiveTab("viewAttendance"); setErrorMsg(""); setSuccessMsg(""); }}
@@ -486,12 +486,12 @@ export default function Home() {
                 : "border-transparent text-slate-500 hover:text-slate-700"
             }`}
           >
-            FR06 — Student Attendance & %
+            Student Attendance & Summary
           </button>
         </nav>
 
         {/* ============================================================== */}
-        {/* TAB 1: FR02 & FR03 — STUDENTS (CRUD + Search)                   */}
+        {/* TAB 1: STUDENTS (CRUD + Search)                                */}
         {/* ============================================================== */}
         {activeTab === "students" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -499,7 +499,7 @@ export default function Home() {
             <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-2xs space-y-3">
               <div className="flex justify-between items-center">
                 <h3 className="text-sm font-bold text-slate-900">
-                  {editingStudentId ? "Edit Student" : "Register Student (FR02)"}
+                  {editingStudentId ? "Edit Student" : "Register Student"}
                 </h3>
                 {editingStudentId && (
                   <button
@@ -594,7 +594,7 @@ export default function Home() {
                   disabled={loading}
                   className="w-full mt-2 rounded bg-blue-600 px-3 py-2 text-white font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors"
                 >
-                  {loading ? "Saving..." : editingStudentId ? "Update Student (FR03)" : "Register Student (FR02)"}
+                  {loading ? "Saving..." : editingStudentId ? "Update Student" : "Register Student"}
                 </button>
               </form>
             </div>
@@ -602,9 +602,9 @@ export default function Home() {
             {/* List & Search */}
             <div className="lg:col-span-2 bg-white p-5 rounded-lg border border-slate-200 shadow-2xs space-y-3">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <h3 className="text-sm font-bold text-slate-900">Student Directory (FR02)</h3>
+                <h3 className="text-sm font-bold text-slate-900">Student Directory</h3>
 
-                {/* FR03: Search students by name */}
+                {/* Search students by name */}
                 <form onSubmit={handleStudentSearch} className="flex gap-2">
                   <input
                     type="text"
@@ -638,7 +638,7 @@ export default function Home() {
                       <th className="py-2 px-2.5">NIC</th>
                       <th className="py-2 px-2.5">Email</th>
                       <th className="py-2 px-2.5">Phone</th>
-                      <th className="py-2 px-2.5 text-right">Actions (FR03)</th>
+                      <th className="py-2 px-2.5 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100">
@@ -681,7 +681,7 @@ export default function Home() {
         )}
 
         {/* ============================================================== */}
-        {/* TAB 2: FR01 — COURSES (CRUD)                                    */}
+        {/* TAB 2: COURSES (CRUD)                                          */}
         {/* ============================================================== */}
         {activeTab === "courses" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -689,7 +689,7 @@ export default function Home() {
             <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-2xs space-y-3">
               <div className="flex justify-between items-center">
                 <h3 className="text-sm font-bold text-slate-900">
-                  {editingCourseId ? "Edit Course (FR01)" : "Add Course (FR01)"}
+                  {editingCourseId ? "Edit Course" : "Add Course"}
                 </h3>
                 {editingCourseId && (
                   <button
@@ -773,7 +773,7 @@ export default function Home() {
 
             {/* Courses Table */}
             <div className="lg:col-span-2 bg-white p-5 rounded-lg border border-slate-200 shadow-2xs space-y-3">
-              <h3 className="text-sm font-bold text-slate-900">View Courses (FR01)</h3>
+              <h3 className="text-sm font-bold text-slate-900">View Courses</h3>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
@@ -829,13 +829,13 @@ export default function Home() {
         )}
 
         {/* ============================================================== */}
-        {/* TAB 3: FR04 — ENROLMENT (Enrol Student in Course)                */}
+        {/* TAB 3: ENROLMENT (Enrol Student in Course)                      */}
         {/* ============================================================== */}
         {activeTab === "enrolment" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Enrol Form */}
             <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-2xs space-y-3">
-              <h3 className="text-sm font-bold text-slate-900">Enrol a Student in a Course (FR04)</h3>
+              <h3 className="text-sm font-bold text-slate-900">Enrol a Student in a Course</h3>
               <p className="text-xs text-slate-500">Links an existing registered student to a course.</p>
 
               <form onSubmit={handleEnrollSubmit} className="space-y-2.5 text-xs">
@@ -889,14 +889,14 @@ export default function Home() {
                   disabled={loading}
                   className="w-full mt-2 rounded bg-blue-600 px-3 py-2 text-white font-semibold hover:bg-blue-700 disabled:opacity-50 transition-colors"
                 >
-                  {loading ? "Enrolling..." : "Enrol Student (FR04)"}
+                  {loading ? "Enrolling..." : "Enrol Student"}
                 </button>
               </form>
             </div>
 
             {/* Enrolments Table */}
             <div className="lg:col-span-2 bg-white p-5 rounded-lg border border-slate-200 shadow-2xs space-y-3">
-              <h3 className="text-sm font-bold text-slate-900">Active Enrolments (FR04)</h3>
+              <h3 className="text-sm font-bold text-slate-900">Active Enrolments</h3>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-xs">
@@ -944,13 +944,13 @@ export default function Home() {
         )}
 
         {/* ============================================================== */}
-        {/* TAB 4: FR05 — MARK ATTENDANCE (Present / Absent)                */}
+        {/* TAB 4: MARK ATTENDANCE (Present / Absent)                       */}
         {/* ============================================================== */}
         {activeTab === "markAttendance" && (
           <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-2xs space-y-4">
             <div>
               <h3 className="text-sm font-bold text-slate-900">
-                Mark Attendance for Students of a Course (FR05)
+                Mark Attendance for Students of a Course
               </h3>
               <p className="text-xs text-slate-500">
                 Pick a course and date, then mark each enrolled student as Present or Absent.
@@ -1051,7 +1051,7 @@ export default function Home() {
                     disabled={loading}
                     className="rounded bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700 disabled:opacity-50 text-xs shadow-xs"
                   >
-                    {loading ? "Saving to Database..." : "Save Attendance (FR05)"}
+                    {loading ? "Saving to Database..." : "Save Attendance"}
                   </button>
                 </div>
               </div>
@@ -1060,13 +1060,13 @@ export default function Home() {
         )}
 
         {/* ============================================================== */}
-        {/* TAB 5: FR06 — VIEW ATTENDANCE & PERCENTAGE                      */}
+        {/* TAB 5: VIEW ATTENDANCE & PERCENTAGE                            */}
         {/* ============================================================== */}
         {activeTab === "viewAttendance" && (
           <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-2xs space-y-4">
             <div>
               <h3 className="text-sm font-bold text-slate-900">
-                View Attendance Records & Percentage of a Student (FR06)
+                View Attendance Records & Percentage of a Student
               </h3>
               <p className="text-xs text-slate-500">
                 Calculates total sessions, present count, absent count, and attendance %.

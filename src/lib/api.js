@@ -39,7 +39,7 @@ export async function checkHealth() {
   return handleResponse(res);
 }
 
-// ---------------- FR01: COURSES ----------------
+// ---------------- COURSES ----------------
 export async function getCourses() {
   const res = await fetch(`${API_BASE_URL}/courses`, {
     method: "GET",
@@ -74,7 +74,7 @@ export async function deleteCourse(id) {
   return handleResponse(res);
 }
 
-// ---------------- FR02 & FR03: STUDENTS ----------------
+// ---------------- STUDENTS ----------------
 export async function getStudents() {
   const res = await fetch(`${API_BASE_URL}/students`, {
     method: "GET",
@@ -119,7 +119,7 @@ export async function deleteStudent(id) {
   return handleResponse(res);
 }
 
-// ---------------- FR04: ENROLMENT ----------------
+// ---------------- ENROLMENT ----------------
 export async function getEnrollments(courseId = null, studentId = null) {
   let url = `${API_BASE_URL}/enrollments`;
   const params = [];
@@ -151,7 +151,7 @@ export async function deleteEnrollment(id) {
   return handleResponse(res);
 }
 
-// ---------------- FR05 & FR06: ATTENDANCE ----------------
+// ---------------- ATTENDANCE ----------------
 export async function markAttendance(payload) {
   const res = await fetch(`${API_BASE_URL}/attendance/mark`, {
     method: "POST",
