@@ -29,6 +29,7 @@ async function handleResponse(res) {
   return data;
 }
 
+// ---------------- HEALTH ----------------
 export async function checkHealth() {
   const res = await fetch(`${API_BASE_URL}/health`, {
     method: "GET",
@@ -38,6 +39,42 @@ export async function checkHealth() {
   return handleResponse(res);
 }
 
+// ---------------- FR01: COURSES ----------------
+export async function getCourses() {
+  const res = await fetch(`${API_BASE_URL}/courses`, {
+    method: "GET",
+    headers: { "Accept": "application/json" },
+    cache: "no-store",
+  });
+  return handleResponse(res);
+}
+
+export async function createCourse(courseData) {
+  const res = await fetch(`${API_BASE_URL}/courses`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(courseData),
+  });
+  return handleResponse(res);
+}
+
+export async function updateCourse(id, courseData) {
+  const res = await fetch(`${API_BASE_URL}/courses/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(courseData),
+  });
+  return handleResponse(res);
+}
+
+export async function deleteCourse(id) {
+  const res = await fetch(`${API_BASE_URL}/courses/${id}`, {
+    method: "DELETE",
+  });
+  return handleResponse(res);
+}
+
+// ---------------- FR02 & FR03: STUDENTS ----------------
 export async function getStudents() {
   const res = await fetch(`${API_BASE_URL}/students`, {
     method: "GET",
@@ -60,17 +97,37 @@ export async function searchStudents(query = "", page = 0, size = 10) {
 export async function registerStudent(studentData) {
   const res = await fetch(`${API_BASE_URL}/students`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-    },
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
     body: JSON.stringify(studentData),
   });
   return handleResponse(res);
 }
 
-export async function getCourses() {
-  const res = await fetch(`${API_BASE_URL}/courses`, {
+export async function updateStudent(id, studentData) {
+  const res = await fetch(`${API_BASE_URL}/students/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(studentData),
+  });
+  return handleResponse(res);
+}
+
+export async function deleteStudent(id) {
+  const res = await fetch(`${API_BASE_URL}/students/${id}`, {
+    method: "DELETE",
+  });
+  return handleResponse(res);
+}
+
+// ---------------- FR04: ENROLMENT ----------------
+export async function getEnrollments(courseId = null, studentId = null) {
+  let url = `${API_BASE_URL}/enrollments`;
+  const params = [];
+  if (courseId) params.push(`courseId=${courseId}`);
+  if (studentId) params.push(`studentId=${studentId}`);
+  if (params.length > 0) url += `?${params.join("&")}`;
+
+  const res = await fetch(url, {
     method: "GET",
     headers: { "Accept": "application/json" },
     cache: "no-store",
@@ -78,20 +135,43 @@ export async function getCourses() {
   return handleResponse(res);
 }
 
-export async function createCourse(courseData) {
-  const res = await fetch(`${API_BASE_URL}/courses`, {
+export async function enrollStudent(enrollmentData) {
+  const res = await fetch(`${API_BASE_URL}/enrollments`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json",
-    },
-    body: JSON.stringify(courseData),
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(enrollmentData),
   });
   return handleResponse(res);
 }
 
-export async function getUsers() {
-  const res = await fetch(`${API_BASE_URL}/users`, {
+export async function deleteEnrollment(id) {
+  const res = await fetch(`${API_BASE_URL}/enrollments/${id}`, {
+    method: "DELETE",
+  });
+  return handleResponse(res);
+}
+
+// ---------------- FR05 & FR06: ATTENDANCE ----------------
+export async function markAttendance(payload) {
+  const res = await fetch(`${API_BASE_URL}/attendance/mark`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  return handleResponse(res);
+}
+
+export async function getAttendanceByCourseAndDate(courseId, dateStr) {
+  const res = await fetch(`${API_BASE_URL}/attendance/course/${courseId}?date=${dateStr}`, {
+    method: "GET",
+    headers: { "Accept": "application/json" },
+    cache: "no-store",
+  });
+  return handleResponse(res);
+}
+
+export async function getStudentAttendanceSummary(studentId) {
+  const res = await fetch(`${API_BASE_URL}/attendance/student/${studentId}`, {
     method: "GET",
     headers: { "Accept": "application/json" },
     cache: "no-store",
