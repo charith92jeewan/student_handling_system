@@ -74,6 +74,41 @@ export async function deleteCourse(id) {
   return handleResponse(res);
 }
 
+// Course Modules & GP Credits
+export async function getCourseModules(courseId) {
+  const res = await fetch(`${API_BASE_URL}/courses/${courseId}/modules`, {
+    method: "GET",
+    headers: { "Accept": "application/json" },
+    cache: "no-store",
+  });
+  return handleResponse(res);
+}
+
+export async function addCourseModule(courseId, moduleData) {
+  const res = await fetch(`${API_BASE_URL}/courses/${courseId}/modules`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(moduleData),
+  });
+  return handleResponse(res);
+}
+
+export async function updateCourseModule(courseId, moduleId, moduleData) {
+  const res = await fetch(`${API_BASE_URL}/courses/${courseId}/modules/${moduleId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(moduleData),
+  });
+  return handleResponse(res);
+}
+
+export async function deleteCourseModule(courseId, moduleId) {
+  const res = await fetch(`${API_BASE_URL}/courses/${courseId}/modules/${moduleId}`, {
+    method: "DELETE",
+  });
+  return handleResponse(res);
+}
+
 // ---------------- STUDENTS ----------------
 export async function getStudents() {
   const res = await fetch(`${API_BASE_URL}/students`, {
